@@ -1,0 +1,23 @@
+version: '3'
+services:
+    web:
+        image: oberonamsterdam/apache24-fpm
+        restart: always
+        network_mode: "bridge"
+        environment:
+            - "VIRTUAL_HOST=${DOCKER_VHOST}"
+            - "APACHE_DOCUMENTROOT=${DOCKER_WEBROOT}"
+            - "HTTPS_METHOD=${DOCKER_HTTPS_METHOD}"
+            - "LETSENCRYPT_HOST=${DOCKER_LETSENCRYPT_HOST}"
+            - "LETSENCRYPT_EMAIL=${DOCKER_LETSENCRYPT_EMAIL}"
+        volumes:
+            - .:/app/:delegated
+
+    node:
+        image: oberonamsterdam/pm2-git:10-alpine
+        volumes:
+            - .:/app/:delegated
+            - $HOME/.ssh/id_rsa:/root/.ssh/id_rsa
+            - $HOME/.ssh/known_hosts:/root/.ssh/known_hosts
+        entrypoint: "/app/deploy.sh"
+        network_mode: "bridge"
