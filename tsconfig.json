@@ -33,7 +33,8 @@
         "isolatedModules": true,
         "noEmit": true
     },
-    "include": [
-        "src"
+    "include": ["src"],
+    "files": [
+        "node_modules/gsap/types/index.d.ts"
     ]
 }

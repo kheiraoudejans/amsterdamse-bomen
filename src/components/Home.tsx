@@ -1,51 +1,65 @@
-import React from 'react';
-import styled, { keyframes } from 'styled-components/macro';
-import logo from '../logo.svg';
+import React, { useEffect } from 'react';
+import styled from 'styled-components/macro';
 import Helmet from 'react-helmet';
+import Tree from '../icons/Tree';
+import { gsap } from 'gsap';
+import DrawSVGPlugin from 'gsap/DrawSVGPlugin';
 
-const heartbeat = keyframes`
-    0% { transform: scale(1); }
-    80% { transform: scale(1); }
-    85% { transform: scale(1.15); }
-    90% { transform: scale(1.1); }
-    95% { transform: scale(1.05); }
-    100% { transform: scale(1); }
-`;
+const Home = () => {
+    useEffect(() => {
+        gsap.registerPlugin(DrawSVGPlugin);
 
-const Logo = styled.img`
-    animation: ${heartbeat} infinite 1s linear;
-    height: 80px;
-`;
+        const trees = gsap.timeline();
 
-const Header = styled.header`
-    background-color: #222;
-    height: 150px;
-    padding: 20px;
-    color: white;
+        trees
+            .fromTo('svg #tree', { drawSVG: '83% 85%' }, { drawSVG: '0% 85%', duration: 1 })
+            .fromTo('svg #tree', { drawSVG: '85% 0%' }, { drawSVG: '0% 100%', duration: 0.5 })
+            .fromTo('svg #tree', { fill: '#fff' }, { fill: '#4B1E16', duration: 0.5 })
+            .from('.trees svg .leaves', { opacity: 0, stagger: 0.1, duration: 0.5, ease: 'power1.out' })
+            .from('h1', { opacity: 0, stagger: 0.1, duration: 0.5 })
+            .to('svg', { opacity: 0, duration: 1 });
+    }, []);
+
+    return (
+        <>
+            <Helmet>
+                <title>Home</title>
+                <meta name="description" content="The homepage." />
+            </Helmet>
+            <Trees className="trees">
+                <Title>De BoomApp</Title>
+                <StyledTree />
+            </Trees>
+        </>
+    );
+};
+
+export default Home;
+
+const Trees = styled.div`
+    display: flex;
+    height: 100vh;
+    align-items: flex-end;
+    justify-content: space-between;
+    flex-direction: column;
+    background-color: darkseagreen;
 `;
 
 const Title = styled.h1`
-    font-size: 1.5em;
+    width: 100vw;
+    margin-top: 20vh;
+    text-transform: uppercase;
 `;
 
-const Intro = styled.p`
-    font-size: large;
+const StyledTree = styled(Tree)`
+    width: 100vw;
+    height: 100vh;
+
+    .leaves:nth-of-type(odd) {
+        fill: green;
+    }
+
+    .leaves:nth-of-type(even) {
+        fill: darkgreen;
+    }
 `;
-
-const Home = () => (
-    <>
-        <Helmet>
-            <title>Home</title>
-            <meta name="description" content="The homepage." />
-        </Helmet>
-        <Header>
-            <Logo src={logo} alt="logo" />
-            <Title>Welcome to React</Title>
-        </Header>
-        <Intro>
-            To get started, edit <code>src/components/App.ts</code> and save to reload.
-        </Intro>
-    </>
-);
-
-export default Home;
